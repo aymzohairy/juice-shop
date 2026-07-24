@@ -1,15 +1,11 @@
 pipeline {
     agent any
-
+    tools {
+        // Must match the name you gave it in Global Tool Configuration
+        nodejs 'node26' 
+    }
     stages {
         stage('Test') {
-            agent {
-                docker {
-                    image 'node:26.5.0-bullseye'
-                    // reuseNode true is optional but recommended to avoid workspace hopping
-                    reuseNode true 
-                }
-            }
             steps {
                 sh 'yarn install'
                 sh 'yarn test'
