@@ -7,8 +7,11 @@ pipeline {
     stages {
         stage('Test') {
             steps {
-                sh 'yarn install'
-                sh 'yarn test'
+                sh '''
+                    export NODE_OPTIONS="--max-old-space-size=4096"
+                    yarn install --frozen-lockfile --prefer-offline
+                    yarn test --exit
+                '''
             }
         }
 
