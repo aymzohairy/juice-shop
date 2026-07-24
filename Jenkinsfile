@@ -5,7 +5,7 @@ pipeline {
         stage('Test') {
             agent {
                 docker {
-                    image 'node:26-bullseye'
+                    image 'node:26.5.0-bullseye'
                     // reuseNode true is optional but recommended to avoid workspace hopping
                     reuseNode true 
                 }
