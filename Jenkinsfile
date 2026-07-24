@@ -1,13 +1,27 @@
 pipeline {
     agent any
+    
     tools {
-        // Must match the name you gave it in Global Tool Configuration
+        // Must match the name you gave it in Manage Jenkins > Global Tool Configuration
         nodejs 'node26' 
     }
+    
     stages {
         stage('Test') {
+            options {
+                // Safeguard against the Mocha test suite hanging indefinitely
+                timeout(time: 10, unit: 'MINUTES')
+            }
             steps {
-                sh 'node test'
+                // Install dependencies using npm instead of yarn
+                sh 'npm install'
+                
+                // Execute the test script defined in package.json with the memory fix applied
+                // Note: The '-- --exit' syntax passes the exit flag through npm to the underlying test runner
+                sh '''
+                  export NODE_OPTIONS="--max-old-space-size=4096"
+                  npm test -- --exit
+                '''
             }
         }
 
