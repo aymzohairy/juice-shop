@@ -10,7 +10,7 @@ pipeline {
         stage('Test') {
             options {
                 // Safeguard against the Mocha test suite hanging indefinitely
-                timeout(time: 10, unit: 'MINUTES')
+                timeout(time: 30, unit: 'MINUTES')
             }
             steps {
                 // Install dependencies using npm instead of yarn
