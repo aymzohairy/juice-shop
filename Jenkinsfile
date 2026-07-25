@@ -13,15 +13,8 @@ pipeline {
              //   timeout(time: 30, unit: 'MINUTES')
            // }
             steps {
-                // Install dependencies using npm instead of yarn
-                sh 'npm install'
-                
-                // Execute the test script defined in package.json with the memory fix applied
-                // Note: The '-- --exit' syntax passes the exit flag through npm to the underlying test runner
-                sh '''
-                  export NODE_OPTIONS="--max-old-space-size=4096"
-                  npm test -- --exit
-                '''
+                sh 'yarn install'
+                sh 'yarn test'
             }
         }
 
