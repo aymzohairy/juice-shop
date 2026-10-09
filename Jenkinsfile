@@ -7,7 +7,7 @@ pipeline {
     }
     
     stages {
-        stage('Test') {
+        stage('Test1') {
            // options {
                 // Safeguard against the Mocha test suite hanging indefinitely
              //   timeout(time: 30, unit: 'MINUTES')
