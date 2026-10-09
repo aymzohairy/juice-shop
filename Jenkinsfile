@@ -8,6 +8,13 @@ pipeline {
     
     stages {
         stage('Test') {
+            agent {
+                docker {
+                    image 'node:26-alpine'
+                    reuseNode true
+                    args '-e HOME=/tmp'
+                }
+            }
            // options {
                 // Safeguard against the Mocha test suite hanging indefinitely
              //   timeout(time: 30, unit: 'MINUTES')
@@ -15,10 +22,8 @@ pipeline {
             steps {
                 script {
                     docker.image('node:26-alpine').inside {
-                        sh 'npm install -g yarn'
-                        sh 'yarn --version'
-                        sh 'yarn install'
-                        sh 'yarn test'
+                        sh 'npx yarn install'
+                        sh 'npx yarn test'
                     }
                 }
             }
