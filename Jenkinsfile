@@ -20,12 +20,8 @@ pipeline {
              //   timeout(time: 30, unit: 'MINUTES')
            // }
             steps {
-                script {
-                    docker.image('node:26-alpine').inside {
-                        sh 'npx yarn install'
-                        sh 'npx yarn test'
-                    }
-                }
+                sh 'npx -y yarn install'
+                sh 'npx -y yarn test'
             }
         }
 
