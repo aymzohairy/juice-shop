@@ -227,5 +227,9 @@
     "arm64",
     "arm"
   ],
-  "heroku-run-build-script": true
+  "heroku-run-build-script": true,
+  "resolutions": {
+  "@types/express": "<the version in your root dependencies>",
+  "@types/express-serve-static-core": "<matching version>"
+  }
 }
