@@ -20,11 +20,11 @@ pipeline {
              //   timeout(time: 30, unit: 'MINUTES')
            // }
             steps {
+                sh 'npx -y yarn install'
+                sh 'npx tsc --noEmit -p .'
                 sh 'yarn why @types/express'
                 sh 'yarn why @types/express-serve-static-core'
                 sh 'yarn remove @types/express-jwt'
-                sh 'npx -y yarn install'
-                sh 'npx tsc --noEmit -p .'
                 sh 'npx -y yarn test'
             }
         }
