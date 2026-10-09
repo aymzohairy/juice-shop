@@ -15,6 +15,8 @@ pipeline {
             steps {
                 script {
                     docker.image('node:26-alpine').inside {
+                        sh 'npm install -g yarn'
+                        sh 'yarn --version'
                         sh 'yarn install'
                         sh 'yarn test'
                     }
