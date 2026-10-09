@@ -13,8 +13,12 @@ pipeline {
              //   timeout(time: 30, unit: 'MINUTES')
            // }
             steps {
-                sh 'yarn install'
-                sh 'yarn test'
+                script {
+                    docker.image('node:26-alpine').inside {
+                        sh 'yarn install'
+                        sh 'yarn test'
+                    }
+                }
             }
         }
 
