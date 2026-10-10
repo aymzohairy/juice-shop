@@ -32,33 +32,35 @@ pipeline {
                 //sh 'docker push ayzohairy/demo-app:juice-shop-1.1'
             }
         }
+
+        
+        stage('Secret Scan (Gitleaks)') {
+            agent {
+                docker {
+                    image 'zricethezav/gitleaks:latest'
+                    reuseNode true
+                    args '--entrypoint=""'
+                }
+            }
+            steps {
+                catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                    sh '''
+                        gitleaks detect \
+                        --source . \
+                        --report-format json \
+                        --report-path gitleaks-report.json \
+                        --redact \
+                        --verbose \
+                        --exit-code 1
+                    '''
+                }
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'gitleaks-report.json', allowEmptyArchive: true
+                }
+            }
+        }
     }
 
-    stage('Secret Scan (Gitleaks)') {
-        agent {
-            docker {
-                image 'zricethezav/gitleaks:latest'
-                reuseNode true
-                args '--entrypoint=""'
-            }
-        }
-        steps {
-            catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                sh '''
-                    gitleaks detect \
-                    --source . \
-                    --report-format json \
-                    --report-path gitleaks-report.json \
-                    --redact \
-                    --verbose \
-                    --exit-code 1
-                '''
-            }
-        }
-        post {
-            always {
-                archiveArtifacts artifacts: 'gitleaks-report.json', allowEmptyArchive: true
-            }
-        }
-    }
 }
