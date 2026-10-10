@@ -25,13 +25,13 @@ pipeline {
             }
         }
 
-        stage('Build Image') {
-            steps {
-                // Assuming the underlying Jenkins agent has the Docker daemon running
-                sh 'docker build -t ayzohairy/demo-app:juice-shop-1.1 .'
-                //sh 'docker push ayzohairy/demo-app:juice-shop-1.1'
-            }
-        }
+        // stage('Build Image') {
+        //     steps {
+        //         // Assuming the underlying Jenkins agent has the Docker daemon running
+        //         sh 'docker build -t ayzohairy/demo-app:juice-shop-1.1 .'
+        //         //sh 'docker push ayzohairy/demo-app:juice-shop-1.1'
+        //     }
+        // }
 
         
         stage('Secret Scan (Gitleaks)') {
@@ -46,6 +46,7 @@ pipeline {
                 catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
                     sh '''
                         gitleaks detect \
+                        --config .gitleaks.toml \
                         --source . \
                         --report-format json \
                         --report-path gitleaks-report.json \
