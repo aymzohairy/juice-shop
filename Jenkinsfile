@@ -12,16 +12,18 @@ pipeline {
                 docker {
                     image 'node:26-alpine'
                     reuseNode true
-                    args '-e HOME=/tmp'
+                    args '-e HOME=/tmp -e NPM_CONFIG_LEGACY_PEER_DEPS=true'
                 }
             }
-           // options {
-                // Safeguard against the Mocha test suite hanging indefinitely
-             //   timeout(time: 30, unit: 'MINUTES')
-           // }
+            options {
+                timeout(time: 30, unit: 'MINUTES')
+            }
             steps {
-                sh 'npx -y yarn install'
-                sh 'npx -y yarn test || true'
+                sh '''
+                    npm config set legacy-peer-deps true
+                    npx -y yarn install
+                    npx -y yarn test
+                '''
             }
         }
 
