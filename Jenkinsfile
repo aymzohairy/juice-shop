@@ -64,22 +64,41 @@ pipeline {
         //         }
         //     }
         // }
-        stage('SAST - njsscan') {
+        // stage('SAST - njsscan') {
+        //     agent {
+        //         docker {
+        //             image 'python:3.11-slim'
+        //             reuseNode true
+        //             args '-u 0:0'
+        //         }
+        //     }
+        //     steps {
+        //         sh '''
+        //             pip install --no-cache-dir njsscan
+        //             njsscan . --json -o njsscan-results.json || true
+        //         '''
+        //         archiveArtifacts artifacts: 'njsscan-results.json', allowEmptyArchive: true
+        //     }
+        // }
+        stage('Semgrep') {
             agent {
                 docker {
-                    image 'python:3.11-slim'
+                    image 'returntocorp/semgrep'
                     reuseNode true
-                    args '-u 0:0'
+                    // Overrides the container's default entrypoint so Jenkins can execute shell steps
+                    args '--entrypoint=""'
                 }
             }
-            steps {
-                sh '''
-                    pip install --no-cache-dir njsscan
-                    njsscan . --json -o njsscan-results.json || true
-                '''
-                archiveArtifacts artifacts: 'njsscan-results.json', allowEmptyArchive: true
+            environment {
+                SEMGREP_RULES = 'p/javascript'
             }
-        }
+            steps {
+                // Replicates GitLab's 'allow_failure: true'
+                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    sh 'semgrep ci'
+                }
+            }
+        }        
     }
 
 }
