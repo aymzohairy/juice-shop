@@ -75,7 +75,7 @@ pipeline {
         //     steps {
         //         sh '''
         //             pip install --no-cache-dir njsscan
-        //             njsscan . --json -o njsscan-results.json || true
+        //             njsscan . --sarif -o njsscan-results.sarif || true
         //         '''
         //         archiveArtifacts artifacts: 'njsscan-results.json', allowEmptyArchive: true
         //     }
@@ -95,7 +95,8 @@ pipeline {
             steps {
                 // Replicates GitLab's 'allow_failure: true'
                 catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                    sh 'semgrep ci'
+                    sh 'semgrep ci --json semgrep-result.json'
+                    archiveArtifacts artifacts: 'semgrep-results.json', allowEmptyArchive: true
                 }
             }
         }        
