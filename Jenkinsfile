@@ -20,9 +20,10 @@ pipeline {
             }
             steps {
                 sh '''
-                    npm config set legacy-peer-deps true
-                    npx -y yarn install
-                    npx -y yarn test || true
+                    corepack enable
+                    yarn config set cacheFolder .yarn/cache
+                    yarn install --frozen-lockfile
+                    yarn test || true
                 '''
             }
         }
