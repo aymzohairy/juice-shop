@@ -82,25 +82,25 @@ pipeline {
         //     }
         // }
         stage('Semgrep') {
-            agent {
-                docker {
-                    image 'returntocorp/semgrep'
-                    reuseNode true
-                    // Overrides the container's default entrypoint so Jenkins can execute shell steps
-                    args '--entrypoint="" -e HOME=/tmp'
+                agent {
+                    docker {
+                        image 'returntocorp/semgrep'
+                        reuseNode true
+                        // Overrides the container's default entrypoint so Jenkins can execute shell steps
+                        args '--entrypoint="" -e HOME=/tmp'
+                    }
                 }
-            }
-            environment {
-                SEMGREP_RULES = 'p/javascript'
-            }
-            steps {
-                // Replicates GitLab's 'allow_failure: true'
-                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                    sh 'semgrep ci --json semgrep-result.json'
-                    archiveArtifacts artifacts: 'semgrep-results.json', allowEmptyArchive: true
+                environment {
+                    SEMGREP_RULES = 'p/javascript'
                 }
-            }
-        }        
-    }
+                steps {
+                    // Replicates GitLab's 'allow_failure: true'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                        sh 'semgrep scan --config "${SEMGREP_RULES}" --json --json-output semgrep-result.json'
+                        archiveArtifacts artifacts: 'semgrep-result.json', allowEmptyArchive: true
+                    }
+                }
+            }       
+        }
 
 }
