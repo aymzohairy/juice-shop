@@ -91,7 +91,7 @@ pipeline {
                         image 'returntocorp/semgrep'
                         reuseNode true
                         // Overrides the container's default entrypoint so Jenkins can execute shell steps
-                        args '--entrypoint="" -e HOME=/tmp'
+                        args '--entrypoint="" -e HOME=/tmp -v "${WORKSPACE}:/src" -w /src'
                     }
                 }
                 environment {
