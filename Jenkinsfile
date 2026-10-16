@@ -20,6 +20,9 @@ pipeline {
             }
             steps {
                 sh '''
+                    mkdir -p /tmp/npm-global
+                    npm config set prefix '/tmp/npm-global'
+                    export PATH="/tmp/npm-global/bin:$PATH"
                     npm install -g corepack
                     corepack enable
                     yarn config set cacheFolder .yarn/cache
