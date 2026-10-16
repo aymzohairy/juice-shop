@@ -20,6 +20,7 @@ pipeline {
             }
             steps {
                 sh '''
+                    npm install -g corepack
                     corepack enable
                     yarn config set cacheFolder .yarn/cache
                     yarn install --frozen-lockfile
