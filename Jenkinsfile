@@ -104,9 +104,8 @@ pipeline {
                         archiveArtifacts artifacts: 'semgrep-result.json', allowEmptyArchive: true
                     }
                 }
-            }       
-        }
-
+        } 
+        
         stage('SCA - Retire.js') {
             agent {
                 docker {
@@ -129,6 +128,7 @@ pipeline {
                 }
                 archiveArtifacts artifacts: 'retire-report.json', allowEmptyArchive: true
             }
-        }
+        }      
     }
+
 }
