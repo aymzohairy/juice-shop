@@ -107,4 +107,28 @@ pipeline {
             }       
         }
 
+        stage('SCA - Retire.js') {
+            agent {
+                docker {
+                    image 'node:26-alpine'
+                    reuseNode true
+                    // Set HOME to /tmp to avoid permission errors when running as non-root
+                    args '-e HOME=/tmp'
+                }
+            }
+            steps {
+                // Run retire via npx to avoid global npm install permission issues
+                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    sh '''
+                        npx -y retire \
+                            --path node_modules \
+                            --outputformat json \
+                            --outputpath retire-report.json \
+                            --exitwith 13
+                    '''
+                }
+                archiveArtifacts artifacts: 'retire-report.json', allowEmptyArchive: true
+            }
+        }
+
 }
